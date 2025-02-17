@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclei - Advanced Hacking Guide</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: "Courier New", monospace;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .section {
+            border-left: 4px solid #ff0000;
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+        code {
+            background-color: rgba(255, 0, 0, 0.2);
+            padding: 10px;
+            display: block;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            color: #ff0000;
+        }
+        .highlight {
+            color: #ff0000;
+            font-weight: bold;
+        }
+        .note {
+            color: yellow;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Nuclei - Advanced Hacking Guide</h1>
+
+    <div class="section">
+        <h2>1. Installing Nuclei</h2>
+        <p>Nuclei is a powerful vulnerability scanner. Install it using:</p>
+        <code>
+# Install from ProjectDiscovery repository
+curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest | grep browser_download_url | grep linux_amd64.zip | cut -d '"' -f 4 | wget -i -
+unzip nuclei-linux-amd64.zip
+chmod +x nuclei
+sudo mv nuclei /usr/local/bin/
+        </code>
+        <p>Check if it's installed:</p>
+        <code>nuclei -version</code>
+    </div>
+
+    <div class="section">
+        <h2>2. Understanding the Help Menu (-h)</h2>
+        <p>To see available options, run:</p>
+        <code>nuclei -h</code>
+        <p>You’ll see:</p>
+        <code>
+Usage:
+  nuclei [flags]
+
+Flags:
+  -u, --target string      Target URL/IP for scanning
+  -l, --list string        List of targets
+  -t, --template string    Use a specific template
+  -as, --auto-save         Auto-save results
+  -o, --output string      Output file name
+  --json                   Save results in JSON format
+  --silent                 Show only results
+  -v, --verbose            Show detailed scan info
+        </code>
+    </div>
+
+    <div class="section">
+        <h2>3. Basic Usage - Scanning a Target</h2>
+        <p>Scan a single target:</p>
+        <code>nuclei -u "http://example.com"</code>
+        <p>Scan multiple targets from a list:</p>
+        <code>nuclei -l targets.txt</code>
+    </div>
+
+    <div class="section">
+        <h2>4. Using Templates</h2>
+        <p>Nuclei uses templates to scan for specific vulnerabilities. Download templates:</p>
+        <code>nuclei -update-templates</code>
+        <p>Scan with all default templates:</p>
+        <code>nuclei -u "http://example.com" -t ~/nuclei-templates/</code>
+        <p>Scan using a specific template:</p>
+        <code>nuclei -u "http://example.com" -t ~/nuclei-templates/cves/</code>
+    </div>
+
+    <div class="section">
+        <h2>5. Advanced Usage</h2>
+        <p>Enable verbose mode for more details:</p>
+        <code>nuclei -u "http://example.com" -v</code>
+        <p>Save results to a file:</p>
+        <code>nuclei -u "http://example.com" -o results.txt</code>
+        <p>Run silently (only show vulnerabilities):</p>
+        <code>nuclei -u "http://example.com" --silent</code>
+        <p>Export results as JSON:</p>
+        <code>nuclei -u "http://example.com" --json -o results.json</code>
+    </div>
+
+    <div class="section">
+        <h2>6. Automating Large-Scale Scans</h2>
+        <p>Run a scan on multiple targets using a target list:</p>
+        <code>nuclei -l targets.txt -o scan_results.txt</code>
+        <p>Automate scanning with a cron job (Linux):</p>
+        <code>crontab -e</code>
+        <p>Add the following line to run scans daily at midnight:</p>
+        <code>0 0 * * * nuclei -l targets.txt -o /var/log/nuclei_scan.log</code>
+    </div>
+
+    <div class="section">
+        <h2>7. Custom Templates & Exploit Development</h2>
+        <p>Write a basic template for testing:</p>
+        <code>
+id: example-template
+info:
+  name: Test Template
+  author: hacker
+  severity: info
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/test"
+    matchers:
+      - type: word
+        words:
+          - "Vulnerable"
+        part: body
+        condition: and
+        </code>
+        <p>Use the custom template:</p>
+        <code>nuclei -u "http://example.com" -t test-template.yaml</code>
+    </div>
+
+    <h2 style="text-align:center;" class="highlight">Kroka</h2>
+
+</body>
+</html>
